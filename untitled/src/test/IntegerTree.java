@@ -106,7 +106,8 @@ public class IntegerTree implements Serializable{
         add(new IntegerTree(id, value));
     }
 
-    public void delete(Integer value) {
+    public ArrayList<Long> delete(Integer value) {
+        ArrayList<Long> querylist = new ArrayList<>();
         IntegerTree root = IntegerTree.root;
         IntegerTree previousNode = null;
         while (true) {
@@ -122,8 +123,54 @@ public class IntegerTree implements Serializable{
                         root.add(root.getRight());
                     } else {
                         IntegerTree.root = null;
-                        return;
+                        return querylist;
                     }
+                } else {
+                    System.out.println("i am here");
+                    if (previousNode.getRight().getValue().equals(root.getValue()))
+                        previousNode.setRight(null);
+                    else previousNode.setLeft(null);
+                    previousNode.add(root.getRight());
+                    previousNode.add(root.getLeft());
+                    root = previousNode;
+                }
+
+            } else if (value.compareTo(root.getValue()) > 0) {
+                previousNode = root;
+                root = root.getRight();
+                if (root == null) {
+                    break;
+                }
+            } else {
+                previousNode = root;
+                root = root.getLeft();
+                if (root == null) {
+                    break;
+                }
+            }
+
+        }
+        return querylist;
+    }
+
+    public void delete(long id, Integer value){
+        IntegerTree root = IntegerTree.root;
+        IntegerTree previousNode = null;
+        while (true) {
+            System.out.println(root.getId());
+            if (root.getValue().equals(value) && root.getId() == id) {
+//                System.out.println("i am here");
+                if (previousNode == null) {//если null значит root - самый главный корень дерева
+                    if (root.getRight() != null) {
+                        IntegerTree.root = root.getRight();
+                        root.add(root.getLeft());
+                    } else if (root.getLeft() != null) {
+                        IntegerTree.root = root.getLeft();
+                        root.add(root.getRight());
+                    } else {
+                        IntegerTree.root = null;
+                    }
+                    return;
                 } else {
                     System.out.println("i am here");
                     if (previousNode.getRight().getValue().equals(root.getValue()))

@@ -8,7 +8,6 @@ import java.util.HashMap;
  */
 public class DBHashTable {
     private HashMap<Long,bookObject> bookTable;
-    private String DBName;
 
 
     public DBHashTable(HashMap<Long, bookObject> bookTable) {
@@ -25,6 +24,13 @@ public class DBHashTable {
         this.bookTable = new HashMap<>();
     }
     public void add(bookObject obj){
+        if (bookTable.get(obj.getId()) != null){
+            System.out.println("такая запись уже есть!!!");
+            return;
+        }
         this.bookTable.put(obj.getId(),obj);
+    }
+    public void delete(long id){
+        this.bookTable.remove(id);
     }
 }

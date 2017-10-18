@@ -107,12 +107,62 @@ public class StringTree implements Serializable {
         add(new StringTree(id, value));
     }
 
-    public void delete(String value) {
+    public ArrayList<Long> delete(String value) {
+        ArrayList<Long> querylist = new ArrayList<>();
         StringTree root = StringTree.root;
         StringTree previousNode = null;
         while (true) {
             System.out.println(root.getId());
             if (root.getValue().equals(value)) {
+//                System.out.println("i am here");
+                querylist.add(root.getId());
+                if (previousNode == null) {//если null значит root - самый главный корень дерева
+                    if (root.getRight() != null) {
+                        StringTree.root = root.getRight();
+                        root.add(root.getLeft());
+                    } else if (root.getLeft() != null) {
+                        StringTree.root = root.getLeft();
+                        root.add(root.getRight());
+                    } else {
+                        StringTree.root = null;
+                        return querylist;
+                    }
+                } else {
+                    System.out.println("i am here");
+                    if (previousNode.getRight().getValue().equals(root.getValue()))
+                        previousNode.setRight(null);
+                    else previousNode.setLeft(null);
+                    previousNode.add(root.getRight());
+                    previousNode.add(root.getLeft());
+                    root = previousNode;
+                }
+
+            } else if (value.compareTo(root.getValue()) > 0) {
+                previousNode = root;
+                root = root.getRight();
+                if (root == null) {
+                    break;
+                }
+            } else {
+                previousNode = root;
+                root = root.getLeft();
+                if (root == null) {
+                    break;
+                }
+            }
+
+        }
+        return querylist;
+    }
+
+
+    public void delete(long id, String value) {
+
+        StringTree root = StringTree.root;
+        StringTree previousNode = null;
+        while (true) {
+            System.out.println(root.getId());
+            if (root.getValue().equals(value) && root.getId() == id) {
 //                System.out.println("i am here");
                 if (previousNode == null) {//если null значит root - самый главный корень дерева
                     if (root.getRight() != null) {
@@ -123,8 +173,8 @@ public class StringTree implements Serializable {
                         root.add(root.getRight());
                     } else {
                         StringTree.root = null;
-                        return;
                     }
+                    return;
                 } else {
                     System.out.println("i am here");
                     if (previousNode.getRight().getValue().equals(root.getValue()))

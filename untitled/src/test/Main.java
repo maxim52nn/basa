@@ -6,8 +6,8 @@ package test;
 public class Main {
     public static void main(String[] args) {
         int i = 0;
-//        String value = "b";
-        StringTree tree = new StringTree();
+        String value = "b";
+        StringTree tree = new StringTree(i++,value);
         tree.add(1,"e");
         tree.add(2,"a");
         tree.add(3,"c");
