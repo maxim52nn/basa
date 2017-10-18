@@ -10,32 +10,21 @@ public class DBHashTable {
     private HashMap<Long,bookObject> bookTable;
     private String DBName;
 
-    public void save(){
-        try (FileOutputStream fos = new FileOutputStream("./DB/"+DBName+"/hashtable.db");
-             ObjectOutputStream oos = new ObjectOutputStream(fos);){
 
-            oos.writeObject(bookTable);
-        }catch (FileNotFoundException e){
-            System.out.println("File not found!");
-        }catch (IOException e){
-            System.out.println("Something wrong with IO!");
-        }
+    public DBHashTable(HashMap<Long, bookObject> bookTable) {
+        this.bookTable = bookTable;
     }
-    public void load(){
-        try(FileInputStream fis = new FileInputStream("./DB/"+DBName+"/hashtable.db");
-            ObjectInputStream oin = new ObjectInputStream(fis)){
-
-            bookTable = (HashMap<Long, bookObject>) oin.readObject();
-        }catch (FileNotFoundException e){
-            System.out.println("File not found!");
-        }catch (IOException e){
-            System.out.println("Something wrong with IO!");
-        }catch (ClassNotFoundException e){
-            System.out.println("Your class wasn't found!");
-        }
+    public bookObject search(long id){
+        return this.bookTable.get(id);
+    }
+    public bookObject search(String bookName, String AuthorFirstName, String AuthorLastName){
+        return search(bookObject.createId(bookName,AuthorFirstName,AuthorLastName));
     }
 
-    public DBHashTable(String DBName) {
-        this.DBName = DBName;
+    public DBHashTable() {
+        this.bookTable = new HashMap<>();
+    }
+    public void add(bookObject obj){
+        this.bookTable.put(obj.getId(),obj);
     }
 }

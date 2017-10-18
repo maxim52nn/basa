@@ -46,13 +46,14 @@ public class IntegerTree implements Serializable{
         return value;
     }
 
-    public IntegerTree(int id, Integer value) {
+    public IntegerTree(long id, Integer value) {
         this.id = id;
         this.value = value;
         if (IntegerTree.root == null) {
             IntegerTree.root = this;
         }
     }
+
 
     public ArrayList<Long> search(Integer query) {
         ArrayList<Long> queryList = new ArrayList<>();
@@ -101,7 +102,7 @@ public class IntegerTree implements Serializable{
         }
     }
 
-    public void add(int id, Integer value) {
+    public void add(long id, Integer value) {
         add(new IntegerTree(id, value));
     }
 

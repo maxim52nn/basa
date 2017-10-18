@@ -10,6 +10,22 @@ public class bookObject {
     private Integer year;
     private long id;
 
+    public String getBookName() {
+        return bookName;
+    }
+
+    public String getAuthorFirstName() {
+        return AuthorFirstName;
+    }
+
+    public String getAuthorLastName() {
+        return AuthorLastName;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
     public bookObject(String bookName, String authorFirstName, String authorLastName, Integer year) {
         this.bookName = bookName;
         AuthorFirstName = authorFirstName;
@@ -18,6 +34,9 @@ public class bookObject {
         this.id = createId();
     }
     public long createId(){
+        return longHash( bookName + AuthorFirstName + AuthorLastName);
+    }
+    public static long createId(String bookName, String AuthorFirstName, String AuthorLastName){
         return longHash( bookName + AuthorFirstName + AuthorLastName);
     }
     public static long longHash(String string) {

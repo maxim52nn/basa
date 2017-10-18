@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Created by DaiBogh on 10.10.17.
  */
 public class StringTree implements Serializable {
-    private int id;
+    private long id;
     private String value;
     private static StringTree root;
     private StringTree left, right;
@@ -38,7 +38,7 @@ public class StringTree implements Serializable {
                 '}';
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -46,7 +46,7 @@ public class StringTree implements Serializable {
         return value;
     }
 
-    public StringTree(int id, String value) {
+    public StringTree(long id, String value) {
         this.id = id;
         this.value = value;
         if (StringTree.root == null) {
@@ -54,8 +54,8 @@ public class StringTree implements Serializable {
         }
     }
 
-    public ArrayList<Integer> search(String query) {
-        ArrayList<Integer> queryList = new ArrayList<>();
+    public ArrayList<Long> search(String query) {
+        ArrayList<Long> queryList = new ArrayList<>();
         StringTree root = StringTree.root;
         while (true) {
             if (root.getValue().equals(query)) {
@@ -101,7 +101,9 @@ public class StringTree implements Serializable {
         }
     }
 
-    public void add(int id, String value) {
+
+
+    public void add(long id, String value) {
         add(new StringTree(id, value));
     }
 
