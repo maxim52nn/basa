@@ -1,3 +1,3 @@
-public class stringTree<String> extends Tree {
+public class stringTree<String> {
 
 }
