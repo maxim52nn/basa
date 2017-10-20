@@ -9,8 +9,21 @@ public class DBManager {
     private DBTable table;
     private String fileName;
 
-    public DBManager(String fileName) {
+    public DBManager(String fileName, boolean fileExist) {
         this.fileName = fileName;
+        if (!fileExist){
+            table = new DBTable();
+        }
+    }
+
+    public DBManager() {
+        this.fileName = "default.db";
+        table = new DBTable();
+
+    }
+
+    public DBTable getTable(){
+        return table;
     }
     public boolean load(){
         return load(this.fileName);
@@ -19,12 +32,21 @@ public class DBManager {
         try(FileInputStream fis = new FileInputStream(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis)){
             table = (DBTable) ois.readObject();
+            Years.setRoot(table.getYearTree());
+            AuthorFirstNames.setRoot(table.getAuthorFirstNames());
+            AuthorLastNames.setRoot(table.getAuthorLastNames());
+            BookNames.setRoot(table.getBookNames());
+            System.out.println(table);
+            this.fileName = fileName;
             return true;
         }catch (FileNotFoundException e){
-            return false;
+            e.printStackTrace();
+                return false;
         }catch (IOException e){
+            e.printStackTrace();
             return false;
         }catch (ClassNotFoundException e){
+            e.printStackTrace();
             return false;
         }
     }
@@ -57,5 +79,16 @@ public class DBManager {
     public boolean loadBackup(String fileName){
         boolean isLoaded = load(fileName);
         return save();
+    }
+    public void generateTable(){
+
+            table = new DBTable();
+
+    }
+    public void deleteDB(){
+        File f = new File(this.fileName);
+        if (f.delete()){
+            System.out.println("deleted");
+        }
     }
 }

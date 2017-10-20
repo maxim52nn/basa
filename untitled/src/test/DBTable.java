@@ -2,21 +2,22 @@ package test;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by DaiBogh on 11.10.17.
  */
 public class DBTable implements Serializable{
-    private IntegerTree yearTree;
-    private StringTree bookNames;
-    private StringTree authorFirstNames;
-    private StringTree authorLastNames;
+    private Years yearTree;
+    private BookNames bookNames;
+    private AuthorFirstNames authorFirstNames;
+    private AuthorLastNames authorLastNames;
     private DBHashTable dbHashTable;
 
-    public DBTable(IntegerTree integerTree,
-                   StringTree bookNames,
-                   StringTree authorFirstNames,
-                   StringTree authorLastNames,
+    public DBTable(Years integerTree,
+                   BookNames bookNames,
+                   AuthorFirstNames authorFirstNames,
+                   AuthorLastNames authorLastNames,
                    DBHashTable dbHashTable) {
         this.yearTree = integerTree;
         this.bookNames = bookNames;
@@ -28,82 +29,124 @@ public class DBTable implements Serializable{
     public DBTable() {
         this.dbHashTable = new DBHashTable();
     }
-    public void add(bookObject obj){
 
+    public AuthorFirstNames getAuthorFirstNames() {
+        return authorFirstNames;
+    }
+
+    public Collection<BookObject> getAll(){
+        return dbHashTable.getBookTable().values();
+    }
+
+    public Years getYearTree() {
+        return yearTree;
+    }
+
+    public BookNames getBookNames() {
+        return bookNames;
+    }
+
+    public AuthorLastNames getAuthorLastNames() {
+        return authorLastNames;
+    }
+
+    public void add(BookObject obj){
+        if (dbHashTable.search(obj.getId()) != null){
+            System.out.println("such element exists");
+            return;
+        }
         dbHashTable.add(obj);
 
 
         if (yearTree != null){
+            System.out.println("year tree is not null");
             yearTree.add(obj.getId(),obj.getYear());
         }else {
-            yearTree = new IntegerTree(obj.getId(),obj.getYear());
+            System.out.println("year tree is null");
+            yearTree = new Years(obj.getId(),obj.getYear());
         }
 
 
         if (bookNames != null){
             bookNames.add(obj.getId(),obj.getBookName());
         }else {
-            bookNames = new StringTree(obj.getId(),obj.getBookName());
+            bookNames = new BookNames(obj.getId(),obj.getBookName());
         }
 
         if (authorFirstNames != null){
-            authorFirstNames.add(obj.getId(),obj.getBookName());
+            authorFirstNames.add(obj.getId(),obj.getAuthorFirstName());
         }else {
-            authorFirstNames = new StringTree(obj.getId(),obj.getBookName());
+            System.out.println("first create");
+            authorFirstNames = new AuthorFirstNames(obj.getId(),obj.getAuthorFirstName());
         }
 
 
         if (authorLastNames != null){
-            authorLastNames.add(obj.getId(),obj.getBookName());
+            authorLastNames.add(obj.getId(),obj.getAuthorLastName());
         }else {
-            authorLastNames = new StringTree(obj.getId(),obj.getBookName());
+            authorLastNames = new AuthorLastNames(obj.getId(),obj.getAuthorLastName());
         }
     }
 
-    public bookObject search(long id){
+    public BookObject search(long id){
         return dbHashTable.search(id);
     }
-    public bookObject search(String bookName, String authorFirstName, String authorLastName){
+    public BookObject search(String bookName, String authorFirstName, String authorLastName){
         return dbHashTable.search(bookName,authorFirstName,authorLastName);
     }
-    public ArrayList<bookObject> stringSearch(StringTree tree,String name){
+    public ArrayList<BookObject> stringSearch(StringTree tree, String name){
+        System.out.println(tree);
         ArrayList<Long> hashes = tree.search(name);
-        ArrayList<bookObject> result = new ArrayList<>();
+        System.out.println(hashes);
+        ArrayList<BookObject> result = new ArrayList<>();
         for (Long id : hashes){
             result.add(dbHashTable.search(id));
         }
         return result;
     }
-    public ArrayList<bookObject> intSearch(IntegerTree tree,Integer year){
+    public ArrayList<BookObject> intSearch(IntegerTree tree, Integer year){
         ArrayList<Long> hashes = tree.search(year);
-        ArrayList<bookObject> result = new ArrayList<>();
+        ArrayList<BookObject> result = new ArrayList<>();
         for (Long id : hashes){
             result.add(dbHashTable.search(id));
         }
         return result;
     }
-    public ArrayList<bookObject> searchBookNames(String bookName){
+    public ArrayList<BookObject> searchBookNames(String bookName){
+
         return stringSearch(this.bookNames, bookName);
     }
-    public ArrayList<bookObject> searchAuthorFirstNames(String firstName){
+    public ArrayList<BookObject> searchAuthorFirstNames(String firstName){
         return stringSearch(this.authorFirstNames, firstName);
-    }public ArrayList<bookObject> searchAuthorLastNames(String lastName){
+    }
+    public ArrayList<BookObject> searchAuthorLastNames(String lastName){
         return stringSearch(this.authorLastNames, lastName);
     }
-    public ArrayList<bookObject> searchYears(int year){
+    public ArrayList<BookObject> searchYears(int year){
         return intSearch(this.yearTree, year);
     }
 
+    @Override
+    public String toString() {
+        return "DBTable{" +
+                "yearTree=" + yearTree +
+                ", bookNames=" + bookNames +
+                ", authorFirstNames=" + authorFirstNames +
+                ", authorLastNames=" + authorLastNames +
+                ", dbHashTable=" + dbHashTable +
+                '}';
+    }
+
     public void delete(long id){
-        bookObject obj = this.dbHashTable.search(id);
-        this.dbHashTable.delete(id);
+        BookObject obj = this.dbHashTable.search(id);
         this.bookNames.delete(id,obj.getBookName());
         this.authorFirstNames.delete(id,obj.getAuthorFirstName());
         this.authorLastNames.delete(id,obj.getAuthorLastName());
         this.yearTree.delete(id,obj.getYear());
+        this.dbHashTable.delete(id);
     }
     public void delete(String bookName, String authorFirstName, String authorLastName){
-        delete(bookObject.createId(bookName,authorFirstName,authorLastName));
+        delete(BookObject.createId(bookName,authorFirstName,authorLastName));
     }
 
     public void deletebyAuthorFirstName(String value){
@@ -124,8 +167,14 @@ public class DBTable implements Serializable{
             delete(id);
         }
     }
-    public void edit(bookObject obj){
-        bookObject oldObj = search(obj.getId());
+    public void deletebyYear(int value){
+        ArrayList<Long> hashes = this.yearTree.delete(value);
+        for (Long id: hashes){
+            delete(id);
+        }
+    }
+    public void edit(long id, BookObject obj){
+        BookObject oldObj = search(id);
         boolean bookNameEdited,
                 authorFirstNameEdited,
                 authorLastNameEdited,
@@ -134,13 +183,16 @@ public class DBTable implements Serializable{
         authorFirstNameEdited = obj.getAuthorFirstName().equals(oldObj.getAuthorFirstName());
         authorLastNameEdited = obj.getAuthorLastName().equals(oldObj.getAuthorLastName());
         yearEdited = obj.getYear().equals(oldObj.getYear());
-
+        System.out.println(bookNameEdited);
+        System.out.println(authorFirstNameEdited);
+        System.out.println(authorLastNameEdited);
+        System.out.println(yearEdited);
         if (authorFirstNameEdited || authorLastNameEdited || bookNameEdited){
-            delete(obj.getId());
+            delete(id);
             add(obj);
         }else if (yearEdited){
 
-            yearTree.delete(oldObj.getId(),oldObj.getYear());
+            yearTree.delete(id,oldObj.getYear());
             yearTree.add(obj.getId(),obj.getYear());
         }else {
             System.out.println("there is no changes!");

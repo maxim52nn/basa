@@ -1,30 +1,30 @@
 package test;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 /**
  * Created by DaiBogh on 11.10.17.
  */
-public class Main {
-    public static void main(String[] args) {
-        int i = 0;
-        String value = "b";
-        StringTree tree = new StringTree(i++,value);
-        tree.add(1,"e");
-        tree.add(2,"a");
-        tree.add(3,"c");
-        tree.add(4,"d");
-        tree.add(5,"e");
-        tree.delete("f");
-        System.out.println(tree);
-        tree.delete("a");
-        System.out.println(tree);
-        tree.delete("e");
-        System.out.println(tree);
+public class Main extends Application{
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("layout.fxml"));
+        primaryStage.setTitle("Users List");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
 
-//        bookObject b1 = new bookObject("Преступление и наказание","Федор","Достоевский",1866);
-//        bookObject b2 = new bookObject("Преступление и наказание","Федор","Достоевский",1866);
-//        bookObject b3 = new bookObject("Война и мир","Лев","Толстой",1873);
-//        System.out.println(b1.getId());
-//        System.out.println(b2.getId());
-//        System.out.println(b3.getId());
+    public static void main(String[] args) {
+        launch(args);
     }
 }
