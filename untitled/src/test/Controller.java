@@ -298,11 +298,17 @@ public class Controller {
             @Override
             public void handle(MouseEvent event) {
                 long id = parseId();
+                Integer year = null;
+                try {
+                    year = Integer.parseInt(yearTextField.getText());
+                }catch (NumberFormatException e){
+                    System.out.println(e);
+                }
                 BookObject newObj = new BookObject(
                         bookNameTextField.getText(),
                         authorFirstNameTextField.getText(),
                         authorLastNameTextField.getText(),
-                        Integer.parseInt(yearTextField.getText())
+                        year
                 );
                 BookObject oldObj = table.search(id);
                 if (oldObj != null){

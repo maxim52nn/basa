@@ -179,21 +179,43 @@ public class DBTable implements Serializable{
                 authorFirstNameEdited,
                 authorLastNameEdited,
                 yearEdited;
-        bookNameEdited = obj.getBookName().equals(oldObj.getBookName());
-        authorFirstNameEdited = obj.getAuthorFirstName().equals(oldObj.getAuthorFirstName());
-        authorLastNameEdited = obj.getAuthorLastName().equals(oldObj.getAuthorLastName());
-        yearEdited = obj.getYear().equals(oldObj.getYear());
+        System.out.println(obj.getBookName() + " " + oldObj.getBookName());
+        System.out.println(obj.getAuthorFirstName() + " " + oldObj.getAuthorFirstName());
+        System.out.println(obj.getAuthorLastName() + " " + oldObj.getAuthorLastName());
+        System.out.println(obj.getYear() + " " + oldObj.getYear());
+
+
+        bookNameEdited = !(obj.getBookName().equals(oldObj.getBookName()) || obj.getBookName().equals(""));
+        authorFirstNameEdited = !(obj.getAuthorFirstName().equals(oldObj.getAuthorFirstName())  || obj.getAuthorFirstName().equals(""));
+        authorLastNameEdited = !(obj.getAuthorLastName().equals(oldObj.getAuthorLastName())  || obj.getAuthorLastName().equals(""));
+        yearEdited = !(obj.getYear().equals(oldObj.getYear()) || obj.getYear().equals(null));
+
+
         System.out.println(bookNameEdited);
         System.out.println(authorFirstNameEdited);
         System.out.println(authorLastNameEdited);
         System.out.println(yearEdited);
-        if (authorFirstNameEdited || authorLastNameEdited || bookNameEdited){
+
+
+        if (authorFirstNameEdited || authorLastNameEdited || bookNameEdited || yearEdited){
+            if (obj.getBookName().equals("")){
+                obj.setBookName(oldObj.getBookName());
+            }
+            if (obj.getAuthorFirstName().equals("")){
+                obj.setAuthorFirstName(oldObj.getAuthorFirstName());
+            }
+            if (obj.getAuthorLastName().equals("")){
+                obj.setAuthorLastName(oldObj.getAuthorLastName());
+            }
+            if (obj.getYear().equals(null)){
+                obj.setYear(oldObj.getYear());
+            }
             delete(id);
             add(obj);
-        }else if (yearEdited){
-
-            yearTree.delete(id,oldObj.getYear());
-            yearTree.add(obj.getId(),obj.getYear());
+//        }else if (yearEdited){
+//
+//            yearTree.delete(id,oldObj.getYear());
+//            yearTree.add(obj.getId(),obj.getYear());
         }else {
             System.out.println("there is no changes!");
         }
